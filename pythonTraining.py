@@ -68,19 +68,116 @@
 # obj_ost.intro()
 # obj_ost.flight()
 
-class Base:
-    def __init__(self):
-        self.a = "GeeksforGeeks"
-        self.__c = "GeeksforGeeks" 
-    def returnPrivateMember(self):
-        print("Inside function")
-        return self.__c
+# class Base:
+#     def __init__(self):
+#         self.a = "GeeksforGeeks"
+#         self.__c = "GeeksforGeeks" 
+#     def returnPrivateMember(self):
+#         print("Inside function")
+#         return self.__c
 
-class Derived(Base):
-    def __init__(self):
-        Base.__init__(self)
-        print("Calling private member of base class: ")
-        print("Private member : ",self.returnPrivateMember())
+# class Derived(Base):
+#     def __init__(self):
+#         Base.__init__(self)
+#         print("Calling private member of base class: ")
+#         print("Private member : ",self.returnPrivateMember())
 
-obj1 = Derived()
-print(obj1.a)
+# obj1 = Derived()
+# print(obj1.a)
+
+
+## Dictionary methods revision:
+
+# thisdict =	{
+#   "brand": "Ford",
+#   "model": "Mustang",
+#   "year": 1964
+# }
+
+# x = thisdict.get('model')
+# print(x)
+
+# car = {
+# "brand": "Ford",
+# "model": "Mustang",
+# "year": 1964
+# }
+
+# x = car.keys()
+
+# print(x) 
+
+# car["color"] = "white"
+
+# print(x) 
+
+# y = car.values()
+
+# print(y)
+
+# if 'model' in car:
+#     print("Yes, model is key in dictionary")
+
+# car.pop('model')
+
+# if 'model' in car:
+#     print("Yes, model is key in dictionary")
+# else:
+#     print("No its not present")
+
+# for i in car:
+#     print(i,car[i])
+
+# my_family = {
+#   "child1" : {
+#     "name" : "Emil",
+#     "year" : 2004
+#   },
+#   "child2" : {
+#     "name" : "Tobias",
+#     "year" : 2007
+#   },
+#   "child3" : {
+#     "name" : "Linus",
+#     "year" : 2011
+#   }
+# }
+
+# for i in my_family:
+#     print(i,' : ')
+#     for j in my_family[i]:
+#         print('\t', j,' : ',my_family[i][j])
+
+# from collections import deque
+
+# data: deque = deque()
+# data.append('1st')
+# data.append('2nd')
+# data.append('3rd')
+# data.append('4th')
+# data.append('5th')
+
+# data.popleft()
+# data.popleft()
+# data.popleft()
+
+# print(data)
+
+from queue import LifoQueue
+
+# Initializing a stack
+stack:LifoQueue = LifoQueue(maxsize=3)
+print(stack.qsize())
+stack.put('a')
+stack.put('b')
+stack.put('c')
+
+print(stack.full())
+print(stack.empty())
+print(stack.qsize())
+
+print(stack.get_nowait())
+print(stack.get_nowait())
+print(stack.get_nowait())
+
+print(stack.empty())
