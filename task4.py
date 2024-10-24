@@ -1,21 +1,36 @@
 from datetime import datetime
 import re
 from typing import Optional
+from cryptography.fernet import Fernet
 
-name_pattern: str= r"^[A-Za-z\s]+$"
+name_pattern: str = r"^[A-Za-z\s]+$"
 account_pin_pattern: str = r"^[0-9]{6}$"
 account_balance_pattern: str = r"^[0-9]+$"
 
 
-def validate_name(name: str)-> bool:
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+def encrypt_data(data: str) -> str:
+    encrypted_data = cipher_suite.encrypt(data.encode())
+    return encrypted_data.decode()
+
+def decrypt_data(encrypted_data: str) -> str:
+    decrypted_data = cipher_suite.decrypt(encrypted_data.encode())
+    return decrypted_data.decode()
+
+def validate_name(name: str) -> bool:
+    '''This function validates username'''
+
     if re.match(name_pattern, name):
         return True
     else:
         print("\nName should contain only alphabets.")
         return False
 
-
 def validate_account_pin(account_pin: str) -> bool:
+    '''This function validates account pin'''
+
     if re.match(account_pin_pattern, account_pin):
         return True
     else:
@@ -24,6 +39,8 @@ def validate_account_pin(account_pin: str) -> bool:
 
 
 def validate_account_balance(account_balance: str) -> bool:
+    '''This function validate account balance'''
+
     if account_balance.strip() == "":
         print("\nAmount can not be empty")
         return False
@@ -35,14 +52,15 @@ def validate_account_balance(account_balance: str) -> bool:
 
 
 class Account:
-    def __init__(self, name: str, account_pin: str, account_balance: int =0) -> None:
+    def __init__(self, name: str, account_pin: str, account_balance: int = 0) -> None:
         self.name: str = name
-        self.account_pin: str= account_pin
+        self.account_pin: str = account_pin
         self.account_balance: int = account_balance
         self.transaction_history: list[dict] = []
 
     def check_pin(self, account_pin: str) -> bool:
-        return self.account_pin == account_pin
+        decrypted_pin = decrypt_data(self.account_pin)
+        return account_pin == decrypted_pin
 
     def withdraw(self, amount: int) -> bool:
         if self.account_balance < int(amount):
@@ -56,7 +74,9 @@ class Account:
         self.account_balance += int(amount)
         self.record_transaction("Deposit", amount)
 
-    def update_information(self, name: Optional[str], account_pin: Optional[str]) -> None:
+    def update_information(
+        self, name: Optional[str], account_pin: Optional[str]
+    ) -> None:
         if name:
             self.name = name
         if account_pin:
@@ -88,6 +108,7 @@ class ATM:
         while True:
             account_pin: str = input("\nSet your account pin (digits only): ")
             if validate_account_pin(account_pin):
+                account_pin = encrypt_data(account_pin)
                 break
 
         while True:
@@ -153,6 +174,7 @@ class ATM:
         while True:
             new_pin: str = input("\nEnter Your New Pin : ")
             if validate_account_pin(new_pin):
+                new_pin = encrypt_data(new_pin)
                 break
 
         account.update_information(
