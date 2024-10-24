@@ -1,19 +1,29 @@
 from datetime import datetime
 import re
 from typing import Optional
-from cryptography.fernet import Fernet
 import random
 import time
 import json
 import os
+from dotenv import load_dotenv
+from cryptography.fernet import Fernet
+
+load_dotenv()
+
+key = os.getenv("SYMMETRIC_KEY")
+
+if key is None:
+    raise ValueError("SYMMETRIC_KEY not found in the environment variables.")
+
+# if isinstance(key, str):
+#     key = key.encode()  
+
+cipher_suite = Fernet(key)
 
 name_pattern: str = r"^[A-Za-z\s]+$"
 account_pin_pattern: str = r"^[0-9]{6}$"
 account_balance_pattern: str = r"^[0-9]+$"
 
-
-key = Fernet.generate_key()
-cipher_suite = Fernet(key)
 
 def encrypt_data(data: str) -> str:
     '''Encrypt given data'''
@@ -205,11 +215,11 @@ class ATM:
 
         # account: Optional[Account] = self.accounts.get(account_number)
         account = fetch_account_details(str(account_number))
-        print("\nReturned account details : ",account)
+
         if account:
             accountObj = Account(account['username'],account['account_number'], account['account_pin'], account['account_balance'])
             accountObj.transaction_history = account['account_transaction']
-            if accountObj.check_pin(decrypt_data(account_pin)):
+            if accountObj.check_pin(account_pin):
                 print("\nLogged in Successfully ... ")
                 return accountObj
             return None
