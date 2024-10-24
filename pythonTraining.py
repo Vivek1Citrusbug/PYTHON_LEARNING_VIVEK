@@ -163,21 +163,135 @@
 
 # print(data)
 
-from queue import LifoQueue
+# from queue import LifoQueue
 
-# Initializing a stack
-stack:LifoQueue = LifoQueue(maxsize=3)
-print(stack.qsize())
-stack.put('a')
-stack.put('b')
-stack.put('c')
+# stack:LifoQueue = LifoQueue(maxsize=3)
+# print(stack.qsize())
+# stack.put('a')
+# stack.put('b')
+# stack.put('c')
 
-print(stack.full())
-print(stack.empty())
-print(stack.qsize())
+# print(stack.full())
+# print(stack.empty())
+# print(stack.qsize())
 
-print(stack.get_nowait())
-print(stack.get_nowait())
-print(stack.get_nowait())
+# print(stack.get_nowait())
+# print(stack.get_nowait())
+# print(stack.get_nowait())
 
-print(stack.empty())
+# print(stack.empty())
+
+# class Node:
+#     def __init__(self,data) -> None:
+#         self.data = data
+#         self.next = None
+
+# class linkedlist:
+#     def __init__(self) -> None:
+#         self.head = None
+    
+#     def insert_at_begin(self,data):
+#         newNode = Node(data)
+#         if self.head is None:
+#             self.head = newNode
+#             return
+#         else:
+#             newNode.next = self.head
+#             self.head = newNode
+
+#     def insert_at_end(self,data):
+#         newNode = Node(data)
+#         if self.head is None:
+#             self.head = newNode
+#         else:
+#             temp = self.head
+#             while temp.next:
+#                 temp = temp.next
+#             temp.next = newNode
+
+#     def insert_at_position(self,data,position):
+#         newNode = Node(data)
+#         if position == 0:
+#             self.insert_at_begin(data)
+        
+#         counter = 0
+#         current_node = self.head
+        
+#         while current_node != None and counter + 1 != position:
+#             counter = counter + 1
+#             current_node = current_node.next
+        
+#         if current_node != None:
+#             newNode.next = current_node.next
+#             current_node.next = newNode
+#             current_node.next = newNode
+#         else:
+#             print("Index not present")
+
+#     def updateNode(self, val, index):
+#             current_node = self.head
+#             position = 0
+#             if position == index:
+#                 current_node.data = val
+#             else:
+#                 while(current_node != None and position != index):
+#                     position = position+1
+#                     current_node = current_node.next
+
+#                 if current_node != None:
+#                     current_node.data = val
+#                 else:
+#                     print("Index not present")
+
+#     def printLL(self):
+#             current_node = self.head
+#             while(current_node):
+#                 print(current_node.data)
+#                 current_node = current_node.next
+
+#     def remove_first_node(self):
+#             if(self.head == None):
+#                 return
+
+#             self.head = self.head.next
+
+#     def remove_last_node(self):
+
+#             if self.head is None:
+#                 return
+
+#             current_node = self.head
+#             while(current_node != None and current_node.next.next != None):
+#                 current_node = current_node.next
+
+#             current_node.next = None
+
+#     def remove_at_index(self, index):
+#             if self.head == None:
+#                 return
+
+#             current_node = self.head
+#             position = 0
+#             if position == index:
+#                 self.remove_first_node()
+#             else:
+#                 while(current_node != None and position+1 != index):
+#                     position = position+1
+#                     current_node = current_node.next
+
+#                 if current_node != None:
+#                     current_node.next = current_node.next.next
+#                 else:
+#                     print("Index not present")
+
+# ll = linkedlist()
+# ll.insert_at_begin(10)
+# ll.printLL()
+# ll.insert_at_end(11)
+# ll.printLL()
+# ll.insert_at_position(1,1)
+# ll.printLL()
+# ll.remove_last_node()
+# ll.printLL()
+# ll.remove_first_node()
+# ll.printLL()
