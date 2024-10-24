@@ -52,26 +52,30 @@ def validate_account_balance(account_balance: str) -> bool:
 
 
 class Account:
-    def __init__(self, name: str, account_pin: str, account_balance: int = 0) -> None:
+    def __init__(self, name: str, account_pin: str, account_balance: str = "0") -> None:
         self.name: str = name
         self.account_pin: str = account_pin
-        self.account_balance: int = account_balance
+        self.account_balance: str = account_balance
         self.transaction_history: list[dict] = []
 
     def check_pin(self, account_pin: str) -> bool:
         decrypted_pin = decrypt_data(self.account_pin)
         return account_pin == decrypted_pin
 
-    def withdraw(self, amount: int) -> bool:
-        if self.account_balance < int(amount):
+    def withdraw(self, amount: str) -> bool:
+        decrypted_balance_str = decrypt_data(self.account_balance)
+        if int(decrypted_balance_str) < int(amount):
             return False
         else:
-            self.account_balance -= int(amount)
+            decrypted_balance = int(decrypted_balance_str) - int(amount)
+            self.account_balance = encrypt_data(str(decrypted_balance))
             self.record_transaction("withdraw", amount)
             return True
 
-    def deposit(self, amount: int) -> None:
-        self.account_balance += int(amount)
+    def deposit(self, amount: str) -> None:
+        decrypted_balance_str = decrypt_data(self.account_balance)
+        decrypted_balance = int(decrypted_balance_str) + int(amount)
+        self.account_balance = encrypt_data(str(decrypted_balance))
         self.record_transaction("Deposit", amount)
 
     def update_information(
@@ -82,7 +86,7 @@ class Account:
         if account_pin:
             self.account_pin = account_pin
 
-    def record_transaction(self, transaction_type: str, amount: int) -> None:
+    def record_transaction(self, transaction_type: str, amount: str) -> None:
         self.transaction_history.append(
             {
                 "type": transaction_type,
@@ -112,9 +116,9 @@ class ATM:
                 break
 
         while True:
-            account_balance_str: str = input("\nAdd your bank balance in integer: ")
-            if validate_account_balance(account_balance_str):
-                account_balance: int = int(account_balance_str)
+            account_balance: str = input("\nAdd your bank balance in integer: ")
+            if validate_account_balance(account_balance):
+                account_balance = encrypt_data(account_balance)
                 break
 
         account_number: int = len(self.accounts) + 1
@@ -139,15 +143,14 @@ class ATM:
 
     def balance_inquiry(self, account: Account) -> None:
         """Function is used to fetch account balance"""
-
-        print(f"\nYour current balance is: INR", account.account_balance)
+        decrypted_balance = decrypt_data(account.account_balance)
+        print(f"\nYour current balance is: INR", decrypted_balance)
 
     def cash_withdraw(self, account: Account) -> None:
         """Function is used to withdraw money from account"""
 
-        amount_str: str = input("\nEnter the amount you want to withdraw: ")
-        if validate_account_balance(amount_str):
-            amount: int = int(amount_str)
+        amount: str = input("\nEnter the amount you want to withdraw: ")
+        if validate_account_balance(amount):
             if account.withdraw(amount):
                 print(f"\nWithdrawal successful!")
             else:
@@ -156,9 +159,8 @@ class ATM:
     def deposit_money(self, account: Account) -> None:
         """Function is used to deposit money in account"""
 
-        amount_str: str = input("\nEnter the amount you want to deposit: ")
-        if validate_account_balance(amount_str):
-            amount: int = int(amount_str)
+        amount: str = input("\nEnter the amount you want to deposit: ")
+        if validate_account_balance(amount):
             account.deposit(amount)
             print(f"\nDeposit successful!")
         else:
