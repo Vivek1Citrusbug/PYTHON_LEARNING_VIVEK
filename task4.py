@@ -1,12 +1,13 @@
 from datetime import datetime
 import re
+from typing import Optional
 
-name_pattern = r"^[A-Za-z\s]+$"
-account_pin_pattern = r"^[0-9]+$"
-account_balance_pattern = r"^[0-9]+$"
+name_pattern: str= r"^[A-Za-z\s]+$"
+account_pin_pattern: str = r"^[0-9]{6}$"
+account_balance_pattern: str = r"^[0-9]+$"
 
 
-def validate_name(name):
+def validate_name(name: str)-> bool:
     if re.match(name_pattern, name):
         return True
     else:
@@ -14,15 +15,15 @@ def validate_name(name):
         return False
 
 
-def validate_account_pin(account_pin):
+def validate_account_pin(account_pin: str) -> bool:
     if re.match(account_pin_pattern, account_pin):
         return True
     else:
-        print("\nAccount PIN should contain only digits.")
+        print("\nAccount PIN should contain only digits of length 6")
         return False
 
 
-def validate_account_balance(account_balance):
+def validate_account_balance(account_balance: str) -> bool:
     if account_balance.strip() == "":
         print("\nAmount can not be empty")
         return False
@@ -34,16 +35,16 @@ def validate_account_balance(account_balance):
 
 
 class Account:
-    def __init__(self, name, account_pin, account_balance=0) -> None:
-        self.name = name
-        self.account_pin = account_pin
-        self.account_balance = account_balance
+    def __init__(self, name: str, account_pin: str, account_balance: int =0) -> None:
+        self.name: str = name
+        self.account_pin: str= account_pin
+        self.account_balance: int = account_balance
         self.transaction_history: list[dict] = []
 
-    def check_pin(self, account_pin):
+    def check_pin(self, account_pin: str) -> bool:
         return self.account_pin == account_pin
 
-    def withdraw(self, amount):
+    def withdraw(self, amount: int) -> bool:
         if self.account_balance < int(amount):
             return False
         else:
@@ -51,17 +52,17 @@ class Account:
             self.record_transaction("withdraw", amount)
             return True
 
-    def deposit(self, amount):
+    def deposit(self, amount: int) -> None:
         self.account_balance += int(amount)
         self.record_transaction("Deposit", amount)
 
-    def update_information(self, name, account_pin):
+    def update_information(self, name: Optional[str], account_pin: Optional[str]) -> None:
         if name:
             self.name = name
         if account_pin:
             self.account_pin = account_pin
 
-    def record_transaction(self, transaction_type, amount):
+    def record_transaction(self, transaction_type: str, amount: int) -> None:
         self.transaction_history.append(
             {
                 "type": transaction_type,
@@ -76,38 +77,38 @@ class ATM:
     def __init__(self) -> None:
         self.accounts: dict[int, Account] = {}
 
-    def create_account(self):
+    def create_account(self) -> None:
         """Function creates account"""
 
         while True:
-            name = input("\nEnter your name: ")
+            name: str = input("\nEnter your name: ")
             if validate_name(name):
                 break
 
         while True:
-            account_pin = input("\nSet your account pin (digits only): ")
+            account_pin: str = input("\nSet your account pin (digits only): ")
             if validate_account_pin(account_pin):
                 break
 
         while True:
-            account_balance = input("\nAdd your bank balance in integer: ")
-            if validate_account_balance(account_balance):
-                account_balance = int(account_balance)
+            account_balance_str: str = input("\nAdd your bank balance in integer: ")
+            if validate_account_balance(account_balance_str):
+                account_balance: int = int(account_balance_str)
                 break
 
-        account_number = len(self.accounts) + 1
+        account_number: int = len(self.accounts) + 1
         self.accounts[account_number] = Account(name, account_pin, account_balance)
         print(
             f"\nAccount created successfully! Your account number is {account_number}."
         )
 
-    def login(self):
+    def login(self) -> Optional[Account]:
         """Function is used for Login into existing account"""
 
-        account_number = int(input("\nEnter your account number : "))
-        account_pin = input("\nEnter your account pin : ")
+        account_number: int = int(input("\nEnter your account number : "))
+        account_pin: str = input("\nEnter your account pin : ")
 
-        account = self.accounts.get(account_number)
+        account: Optional[Account] = self.accounts.get(account_number)
         if account and account.check_pin(account_pin):
             print("\nLogged in Successfully ... ")
             return account
@@ -115,40 +116,42 @@ class ATM:
             print("\nInvalid account number and pin")
             return None
 
-    def balance_inquiry(self, account):
+    def balance_inquiry(self, account: Account) -> None:
         """Function is used to fetch account balance"""
 
         print(f"\nYour current balance is: INR", account.account_balance)
 
-    def cash_withdraw(self, account):
+    def cash_withdraw(self, account: Account) -> None:
         """Function is used to withdraw money from account"""
 
-        amount = input("\nEnter the amount you want to withdraw: ")
-        if validate_account_balance(amount):
+        amount_str: str = input("\nEnter the amount you want to withdraw: ")
+        if validate_account_balance(amount_str):
+            amount: int = int(amount_str)
             if account.withdraw(amount):
                 print(f"\nWithdrawal successful!")
             else:
                 print("\nInsufficient fund")
 
-    def deposit_money(self, account):
+    def deposit_money(self, account: Account) -> None:
         """Function is used to deposit money in account"""
 
-        amount = input("\nEnter the amount you want to deposit: ")
-        if validate_account_balance(amount):
+        amount_str: str = input("\nEnter the amount you want to deposit: ")
+        if validate_account_balance(amount_str):
+            amount: int = int(amount_str)
             account.deposit(amount)
             print(f"\nDeposit successful!")
         else:
             print("Please enter valid amount to deposit")
 
-    def update_account_info(self, account):
+    def update_account_info(self, account: Account) -> None:
         """Function is used to update user name and account pin"""
 
         while True:
-            new_name = input("\nEnter Your New Name or leave blank to skip").strip()
+            new_name: str = input("\nEnter Your New Name or leave blank to skip: ").strip()
             if new_name == "" or validate_name(new_name):
                 break
         while True:
-            new_pin = input("\nEnter Your New Pin")
+            new_pin: str = input("\nEnter Your New Pin : ")
             if validate_account_pin(new_pin):
                 break
 
@@ -157,7 +160,7 @@ class ATM:
         )
         print("\nAccount Information updated successfully")
 
-    def transaction_history(self, account):
+    def transaction_history(self, account: Account) -> None:
         """Function used for checking transaction history"""
 
         print("Transaction History:")
@@ -167,7 +170,7 @@ class ATM:
             )
 
 
-def main():
+def main() -> None:
     atm = ATM()
     while True:
         print("\nATM Menu")
@@ -175,24 +178,24 @@ def main():
         print("2. Login")
         print("3. Exit")
 
-        selected_option = int(input("\nSelect your option : "))
+        selected_option: int = int(input("\nSelect your option : "))
 
         match selected_option:
             case 1:
                 atm.create_account()
             case 2:
-                account = atm.login()
+                account: Optional[Account] = atm.login()
                 if account:
                     while True:
-                        print("\n Account Menu")
-                        print("\n 1. Balance Inquiry")
-                        print("\n 2. Cash Withdrawal")
-                        print("\n 3. Deposit")
-                        print("\n 4. Update Account Information")
-                        print("\n 5. Transaction History")
-                        print("\n 6. Logout")
+                        print("\nAccount Menu")
+                        print("\n1. Balance Inquiry")
+                        print("2. Cash Withdrawal")
+                        print("3. Deposit")
+                        print("4. Update Account Information")
+                        print("5. Transaction History")
+                        print("6. Logout")
 
-                        selected_choice = int(input("\nSelect option : "))
+                        selected_choice: int = int(input("\nSelect option : "))
                         match selected_choice:
                             case 1:
                                 atm.balance_inquiry(account)
