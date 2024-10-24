@@ -1,9 +1,10 @@
 from datetime import datetime
 import re
 
-name_pattern = r'^[A-Za-z\s]+$'
-account_pin_pattern = r'^[0-9]+$'
-account_balance_pattern =  r'^[0-9]+$'
+name_pattern = r"^[A-Za-z\s]+$"
+account_pin_pattern = r"^[0-9]+$"
+account_balance_pattern = r"^[0-9]+$"
+
 
 def validate_name(name):
     if re.match(name_pattern, name):
@@ -11,30 +12,33 @@ def validate_name(name):
     else:
         print("\nName should contain only alphabets.")
         return False
-    
+
+
 def validate_account_pin(account_pin):
-    if re.match(account_pin_pattern, account_pin): 
+    if re.match(account_pin_pattern, account_pin):
         return True
     else:
         print("\nAccount PIN should contain only digits.")
         return False
+
 
 def validate_account_balance(account_balance):
     if account_balance.strip() == "":
         print("\nAmount can not be empty")
         return False
     elif re.match(account_balance_pattern, account_balance):
-        return True 
+        return True
     else:
         print("\nEnter valid amount")
         return False
-    
+
+
 class Account:
-    def __init__(self, name, account_pin, account_balance = 0) -> None:
+    def __init__(self, name, account_pin, account_balance=0) -> None:
         self.name = name
         self.account_pin = account_pin
         self.account_balance = account_balance
-        self.transaction_history:  list[dict]= []
+        self.transaction_history: list[dict] = []
 
     def check_pin(self, account_pin):
         return self.account_pin == account_pin
@@ -44,12 +48,12 @@ class Account:
             return False
         else:
             self.account_balance -= int(amount)
-            self.record_transaction('withdraw',amount)
+            self.record_transaction("withdraw", amount)
             return True
 
     def deposit(self, amount):
         self.account_balance += int(amount)
-        self.record_transaction('Deposit',amount)
+        self.record_transaction("Deposit", amount)
 
     def update_information(self, name, account_pin):
         if name:
@@ -57,12 +61,14 @@ class Account:
         if account_pin:
             self.account_pin = account_pin
 
-    def record_transaction(self,transaction_type,amount):
-        self.transaction_history.append({
-            "type": transaction_type,
-            "amount": amount,
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        })
+    def record_transaction(self, transaction_type, amount):
+        self.transaction_history.append(
+            {
+                "type": transaction_type,
+                "amount": amount,
+                "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            }
+        )
 
 
 class ATM:
@@ -71,8 +77,8 @@ class ATM:
         self.accounts: dict[int, Account] = {}
 
     def create_account(self):
-        '''Function creates account'''
-    
+        """Function creates account"""
+
         while True:
             name = input("\nEnter your name: ")
             if validate_name(name):
@@ -88,7 +94,7 @@ class ATM:
             if validate_account_balance(account_balance):
                 account_balance = int(account_balance)
                 break
-            
+
         account_number = len(self.accounts) + 1
         self.accounts[account_number] = Account(name, account_pin, account_balance)
         print(
@@ -96,7 +102,7 @@ class ATM:
         )
 
     def login(self):
-        '''Function is used for Login into existing account'''
+        """Function is used for Login into existing account"""
 
         account_number = int(input("\nEnter your account number : "))
         account_pin = input("\nEnter your account pin : ")
@@ -110,12 +116,12 @@ class ATM:
             return None
 
     def balance_inquiry(self, account):
-        '''Function is used to fetch account balance'''
+        """Function is used to fetch account balance"""
 
-        print(f"\nYour current balance is: INR",account.account_balance)
+        print(f"\nYour current balance is: INR", account.account_balance)
 
     def cash_withdraw(self, account):
-        '''Function is used to withdraw money from account'''
+        """Function is used to withdraw money from account"""
 
         amount = input("\nEnter the amount you want to withdraw: ")
         if validate_account_balance(amount):
@@ -125,7 +131,7 @@ class ATM:
                 print("\nInsufficient fund")
 
     def deposit_money(self, account):
-        '''Function is used to deposit money in account'''
+        """Function is used to deposit money in account"""
 
         amount = input("\nEnter the amount you want to deposit: ")
         if validate_account_balance(amount):
@@ -135,28 +141,30 @@ class ATM:
             print("Please enter valid amount to deposit")
 
     def update_account_info(self, account):
-        '''Function is used to update user name and account pin'''
+        """Function is used to update user name and account pin"""
 
         while True:
             new_name = input("\nEnter Your New Name or leave blank to skip").strip()
-            if new_name == "" or validate_name(new_name) :
-                break   
+            if new_name == "" or validate_name(new_name):
+                break
         while True:
             new_pin = input("\nEnter Your New Pin")
             if validate_account_pin(new_pin):
                 break
-            
+
         account.update_information(
             new_name if new_name else None, new_pin if new_pin else None
         )
         print("\nAccount Information updated successfully")
 
     def transaction_history(self, account):
-        '''Function used for checking transaction history'''
+        """Function used for checking transaction history"""
 
         print("Transaction History:")
         for transaction in account.transaction_history:
-            print(f"{transaction['date']}: {transaction['type']} - {transaction['amount']} INR")
+            print(
+                f"{transaction['date']}: {transaction['type']} - {transaction['amount']} INR"
+            )
 
 
 def main():
@@ -207,6 +215,7 @@ def main():
                 break
             case default:
                 print("\nEnter valid option")
+
 
 if __name__ == "__main__":
     main()
