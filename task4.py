@@ -13,10 +13,7 @@ load_dotenv()
 key = os.getenv("SYMMETRIC_KEY")
 
 if key is None:
-    raise ValueError("SYMMETRIC_KEY not found in the environment variables.")
-
-# if isinstance(key, str):
-#     key = key.encode()  
+    raise ValueError("SYMMETRIC_KEY not found in the environment variables.")  
 
 cipher_suite = Fernet(key)
 
@@ -146,7 +143,7 @@ class Account:
         else:
             decrypted_balance = int(decrypted_balance_str) - int(amount)
             self.account_balance = encrypt_data(str(decrypted_balance))
-            self.record_transaction("withdraw", amount)
+            self.record_transaction("withdraw", amount,self.account_balance)
             return True
 
     def deposit(self, amount: str) -> None:
@@ -155,26 +152,46 @@ class Account:
         decrypted_balance_str = decrypt_data(self.account_balance)
         decrypted_balance = int(decrypted_balance_str) + int(amount)
         self.account_balance = encrypt_data(str(decrypted_balance))
-        self.record_transaction("Deposit", amount)
+        self.record_transaction("Deposit", amount,self.account_balance)
 
     def update_information(self, name: Optional[str], account_pin: Optional[str]) -> None:
         '''Function performs update information'''
 
-        if name:
-            self.name = name
-        if account_pin:
-            self.account_pin = account_pin
-
-    def record_transaction(self, transaction_type: str, amount: str) -> None:
-        '''Function records user transaction'''
+        with open('src/accounts.json','r') as json_file_read:
+            data = json.load(json_file_read)
         
-        self.transaction_history.append(
-            {
+        for account_fetched in data:
+            if account_fetched['account_number'] == self.account_number:    
+                if name:
+                    account_fetched['username'] = name
+                if account_pin:
+                    account_fetched['account_pin'] = account_pin
+        
+        with open('src/accounts.json', 'w') as json_file_write:
+            json.dump(data, json_file_write, indent=4)
+
+    def record_transaction(self, transaction_type: str, amount: str,account_balance: str) -> None:
+        '''Function records user transaction'''
+        with open('src/accounts.json','r') as json_file_read:
+            data = json.load(json_file_read)
+        for account in data:
+            if account['account_number'] == str(self.account_number):
+                account['account_balance'] = account_balance
+                account['account_transaction'].append( {
                 "type": transaction_type,
                 "amount": amount,
                 "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            }
-        )
+            }) 
+        with open('src/accounts.json', 'w') as json_file_write:
+            json.dump(data, json_file_write, indent=4)
+            
+        # self.transaction_history.append(
+        #     {
+        #         "type": transaction_type,
+        #         "amount": amount,
+        #         "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        #     }
+        # )
 
 
 class ATM:
@@ -230,7 +247,11 @@ class ATM:
     def balance_inquiry(self, account: Account) -> None:
         """Function is used to fetch account balance"""
 
-        decrypted_balance = decrypt_data(account.account_balance)
+        with open('src/accounts.json','r') as json_file_read:
+            data = json.load(json_file_read)
+        for account_fetched in data:
+            if account_fetched['account_number'] == str(account.account_number):
+                decrypted_balance = decrypt_data(account_fetched['account_balance'])
         print(f"\nYour current balance is: INR", decrypted_balance)
 
     def cash_withdraw(self, account: Account) -> None:
@@ -275,10 +296,13 @@ class ATM:
         """Function used for checking transaction history"""
 
         print("Transaction History:")
-        for transaction in account.transaction_history:
-            print(
-                f"{transaction['date']}: {transaction['type']} - {transaction['amount']} INR"
-            )
+        with open('src/accounts.json','r') as read_json_file:
+            data = json.load(read_json_file)
+
+        for accountfetched in data:
+            if accountfetched['account_number'] == str(account.account_number):
+                for transaction in accountfetched['account_transaction']:        
+                    print(f"{transaction['date']}: {transaction['type']} - {transaction['amount']} INR")
 
 
 def main() -> None:
