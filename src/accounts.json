@@ -1,0 +1,35 @@
+[
+    {
+        "account_number": "855703",
+        "username": "Vivek",
+        "account_pin": "gAAAAABnGzZJq8oO0t7de7ydZXeIy6VuwA63av3S4jEP7Zo6GnmpNl4BDhTjLvFAO3qtLQKdcQ0ESvHS8ofLxsEb7eyxvfKl6A==",
+        "account_balance": "gAAAAABnGzZ52VMnj1cNQxoMhsg1kc03Id5vrBBPTs2dxG7198gx3qMCsEK3g5xmgep2NKGjIshb67YrJaRt-HgY9APPLtXR0w==",
+        "account_transaction": [
+            {
+                "type": "withdraw",
+                "amount": "500",
+                "date": "2024-10-24 22:57:49"
+            },
+            {
+                "type": "Deposit",
+                "amount": "500",
+                "date": "2024-10-24 22:58:05"
+            },
+            {
+                "type": "withdraw",
+                "amount": "300",
+                "date": "2024-10-24 23:01:40"
+            },
+            {
+                "type": "Deposit",
+                "amount": "700",
+                "date": "2024-10-24 23:02:06"
+            },
+            {
+                "type": "withdraw",
+                "amount": "12",
+                "date": "2024-10-24 23:11:05"
+            }
+        ]
+    }
+]

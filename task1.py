@@ -5,14 +5,14 @@ def get_user_info() -> None:
     age_pattern = r"^[1-9]\d*$"
 
     while True:
-        userName = input("Enter Your Name: ").strip()
-        if re.match(name_pattern, userName):
+        user_name: str = input("Enter Your Name: ").strip()
+        if re.match(name_pattern, user_name):
             break
         else:
             print("Name should be a valid input (only letters and spaces).")
 
     while True:
-        age_input = input("Enter Your Age: ").strip()
+        age_input: str = input("Enter Your Age: ").strip()
         if re.match(age_pattern, age_input):
             age = int(age_input)
             break
