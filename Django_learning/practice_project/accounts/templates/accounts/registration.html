@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    
+<h1>Registration form</h1>
+<form action = "{% url 'registernewuser' %}" method = "POST">
+    {% csrf_token %}
+    <input type = "text" name = "firstname" placeholder = "firstname">
+    <input type = "text" name = "lastname" placeholder = "lastname">
+    <input type = "text" name = "username" placeholder = "username">
+    <input type = "password" name = "password1" placeholder = "password1">
+    <input type = "password" name = "password2" placeholder = "password2">
+    <input type = "email" name = "email" placeholder = "email">
+    <button type = "Submit">Submit</button>
+</form>
+{% endblock  %}
+
