@@ -1,0 +1,6 @@
+{% extends "base_layout.html" %}
+{% block title %}Dashboard Page{% endblock title %}
+{% block page_body %}
+    <button type="button" class="bt btn-primary"><a href="{% url 'user-logout' %}"> Logout here </a></button> 
+    <h1 class="text-center">Welcome to BlogPost</h1>
+{% endblock page_body %}
